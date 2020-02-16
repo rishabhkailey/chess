@@ -38,12 +38,44 @@ const pawn = (block,Board) => {
     return {possibleMoves , attack}
 }
 
+const check = (r,c) => {
+    if(r<8 && r>=0 && c<8 && c>=0) {
+        return true
+    }
+    return false
+}
+
+const knight = (block,Board) => {
+    let movement = [{r: 2, c: 1},{r: 2, c: -1},{r: 1, c: 2}, {r: 1 ,c: -2},{r: -2, c: 1},{r: -2, c: -1},{r: -1, c: 2}, {r: -1 ,c: -2}]
+    let {r,c} = block
+    let possibleMoves = []
+    let attack = []
+    
+    movement.forEach((move) => {
+        let r1,c1
+        r1 = r + move.r
+        c1 = c + move.c
+        if(!check(r1,c1))
+            return
+        
+        if(!Board[r1][c1].piece){
+            possibleMoves.push({r: r1 ,c: c1})
+        }
+        else if(Board[r1][c1].piece.white !== block.white) {
+            attack.push({r: r1, c: c1})
+        }
+    })
+    return {possibleMoves,attack}
+}
+
 const getValidMoves = (block,Board) => {
 
     switch(block.pieceName) {
         case 'pawn':
             //no need of break we are returning the value here
             return pawn(block,Board);
+        case 'knight':
+            return knight(block,Board);
         default:
             return []
     }
