@@ -13,7 +13,8 @@ class Chess extends Component {
 
             },
             Board : [],
-            highlight: []
+            possibleMoves: [],
+            attack: []
         }
     }
     componentDidMount() {
@@ -21,6 +22,7 @@ class Chess extends Component {
         let black = {}
         let whiteBishops = []
         let blackBishops = []
+
         for(let i=0 ; i<8 ; i++) {
             whiteBishops.push({r: 1 , c: i, firstMove: true, move: 'down'})
             blackBishops.push({r: 6, c: 7-i ,firstMove: true, move: 'up'})
@@ -46,10 +48,10 @@ class Chess extends Component {
         this.setState({Board,white,black})
     }
     
-    move(piece) {
+    move(piece,newBoard) {
         console.log(piece)
-        let moves = getValidMoves(piece)
-        this.setState({selected: piece, highlight: moves})
+        let moves = getValidMoves(piece,newBoard)
+        this.setState({selected: piece, possibleMoves: moves.possibleMoves, attack: moves.attack})
     }
 
     changePosition(r,c) {
@@ -58,14 +60,61 @@ class Chess extends Component {
         selected.r = r
         selected.c = c
         selected.firstMove = false
-        this.setState({selected, highlight: []})
+        console.log('rerender called')
+        this.setState({selected, possibleMoves: [], attack: []})
     }
+    eliminate(block) {
+        //eliminate block and change position of select to this block
+        
+        let {white,black,selected} =  this.state
 
+        if(block.piece.white) {
+            let piece = block.piece
+            let index = -1
+            white[piece.pieceName].forEach((pos,currIndex) => {
+                if(!pos)
+                    return
+                let {r,c} = pos
+                if(r === piece.r && c === piece.c) {
+                    index = currIndex
+                    return
+                }
+            })
+            // selected = reference of piece so it is changing the original object
+            selected.r = piece.r
+            selected.c = piece.c
+            // after delete arr will still have that index but it will be undefined 
+            delete white[piece.pieceName][index]
+            white[piece.pieceName][index] = null
+        }
+        else {
+            let piece = block.piece
+            let index = -1
+            console.log(piece.pieceName,black[piece.pieceName])
+            black[piece.pieceName].forEach((pos,currIndex) => {
+                if(!pos)
+                    return
+                let {r,c} = pos
+                if(r === piece.r && c === piece.c) {
+                    index = currIndex
+                    return
+                }
+            })
+            // selected = reference of piece so it is changing the original object
+            selected.r = piece.r
+            selected.c = piece.c
+            // after delete arr will still have that index but it will be undefined 
+            delete black[piece.pieceName][index]
+            black[piece.pieceName][index] = null
+        }
+        this.setState({white, black, selected: null, possibleMoves: [], attack: []})
+    }
     render() {
-
-        let {Board,white,black,highlight} = this.state
+        console.log('rerendered')
+        let {Board,white,black,possibleMoves,attack} = this.state
         
         // we can not change object in our state as it will effect its value even without setState as reference of object inside object will be same e.g white.bishops = null it will change this.state.bishops as both .bishops refer to same memory
+        // it is also send as an argument to move fxn (to check attacks (positoin of opponents piece is required))
         let newBoard = []
 
         Board.forEach((row) => {
@@ -78,6 +127,8 @@ class Chess extends Component {
         })
         for(let piece in white) {
             white[piece].forEach((pos) => {
+                if(!pos)
+                    return
                 let {r,c} = pos
                 pos.pieceName = piece
                 pos.player = 'white'
@@ -87,6 +138,8 @@ class Chess extends Component {
         }
         for(let piece in black) {
             black[piece].forEach((pos) => {
+                if(!pos) 
+                    return
                 let {r,c} = pos
                 pos.pieceName = piece
                 pos.player = 'black'
@@ -95,9 +148,14 @@ class Chess extends Component {
             })
         }
 
-        highlight.forEach((pos) => {
+        possibleMoves.forEach((pos) => {
             let {r,c} = pos
             newBoard[r][c].highlight = true
+        })
+
+        attack.forEach((pos) => {
+            let {r,c} = pos
+            newBoard[r][c].attack = true
         })
 
         let display = newBoard.map((row,index1) => {
@@ -107,13 +165,20 @@ class Chess extends Component {
                     color = 'white'
                 }
                 let piece =  null
+                let onClick = null
                 if(block.piece && block.piece.player  && block.piece.pieceName) {
-                    piece = <img src={block.piece.pieceName+"_"+block.piece.player+'.svg'} onClick={() => this.move(block.piece)} className = 'piece'></img>
+                    piece = <img src={block.piece.pieceName+"_"+block.piece.player+'.svg'} className = 'piece'></img>
+                    onClick = () => this.move(block.piece,newBoard)
                 }
+
                 if(block.highlight) {
                     return <div className='block highlight' onClick={()=>{this.changePosition(index1,index2)}} key={index1*8+index2} style={{backgroundColor: color}}></div>
                 }
-            return <div className='block' key={index1*8+index2} style={{backgroundColor: color}}>{piece}</div>
+                else if(block.attack) {
+                    return <div className='block attack' key={index1*8+index2} onClick={()=> {this.eliminate(block)}} style={{backgroundColor: color}}>{piece}</div>
+                }
+                else
+                    return <div className='block' key={index1*8+index2} onClick={onClick} style={{backgroundColor: color}}>{piece}</div>
             })
             return <div key={index1} className = 'row'>{displayRow}</div>
         })

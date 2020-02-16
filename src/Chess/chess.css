@@ -20,3 +20,7 @@
 .highlight {
     border: 3px solid gold;
 }
+
+.attack {
+    border: 3px solid red;
+}
