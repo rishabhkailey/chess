@@ -20,16 +20,33 @@ class Chess extends Component {
     componentDidMount() {
         let white = {}
         let black = {}
-        let whiteBishops = []
-        let blackBishops = []
+        let whitepawn = []
+        let blackpawn = []
 
         for(let i=0 ; i<8 ; i++) {
-            whiteBishops.push({r: 1 , c: i, firstMove: true, move: 'down'})
-            blackBishops.push({r: 6, c: 7-i ,firstMove: true, move: 'up'})
+            whitepawn.push({r: 1 , c: i, firstMove: true, move: 'down'})
+            blackpawn.push({r: 6, c: 7-i ,firstMove: true, move: 'up'})
         }
-        black.Bishops =blackBishops
-        white.Bishops = whiteBishops
+        black.pawn = blackpawn
+        white.pawn = whitepawn
         
+        black.rook = [{r: 7, c: 0, firstMove: true},{r: 7, c: 7, firstMove: true}]
+        white.rook = [{r: 0, c: 0, firstMove: true},{r: 0, c: 7, firstMove: true}]
+
+        black.knight = [{r: 7, c: 1, firstMove: true},{r: 7, c: 6, firstMove: true}]
+        white.knight = [{r: 0, c: 1, firstMove: true},{r: 0, c: 6, firstMove: true}]
+
+        black.bishop = [{r: 7, c: 2, firstMove: true},{r: 7, c: 5, firstMove: true}]
+        white.bishop = [{r: 0, c: 2, firstMove: true},{r: 0, c: 5, firstMove: true}]
+
+        black.queen = [{r: 7, c: 3, firstMove: true}]
+        white.queen = [{r: 0, c: 3, firstMove: true}]
+
+        black.king = [{r: 7, c: 4, firstMove: true}]
+        white.king = [{r: 0, c: 4, firstMove: true}]
+
+        
+
         let color = true // white , black = false
         let Board = []
         for(let i=0 ; i<8 ; i++) {
@@ -113,7 +130,7 @@ class Chess extends Component {
         console.log('rerendered')
         let {Board,white,black,possibleMoves,attack} = this.state
         
-        // we can not change object in our state as it will effect its value even without setState as reference of object inside object will be same e.g white.bishops = null it will change this.state.bishops as both .bishops refer to same memory
+        // we can not change object in our state as it will effect its value even without setState as reference of object inside object will be same e.g white.pawns = null it will change this.state.pawns as both .pawns refer to same memory
         // it is also send as an argument to move fxn (to check attacks (positoin of opponents piece is required))
         let newBoard = []
 
@@ -126,6 +143,7 @@ class Chess extends Component {
             newBoard.push(newRow)
         })
         for(let piece in white) {
+            console.log(piece,white[piece])
             white[piece].forEach((pos) => {
                 if(!pos)
                     return
@@ -167,7 +185,7 @@ class Chess extends Component {
                 let piece =  null
                 let onClick = null
                 if(block.piece && block.piece.player  && block.piece.pieceName) {
-                    piece = <img src={block.piece.pieceName+"_"+block.piece.player+'.svg'} className = 'piece'></img>
+                    piece = <img src={'/images/'+block.piece.player+"_"+block.piece.pieceName+'.png'} className = 'piece'></img>
                     onClick = () => this.move(block.piece,newBoard)
                 }
 

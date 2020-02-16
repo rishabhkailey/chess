@@ -1,7 +1,7 @@
 // white above
 // black down
 
-const bishop = (block,Board) => {
+const pawn = (block,Board) => {
     let possibleMoves = []
     let attack = []
     let {r,c} = block
@@ -41,9 +41,9 @@ const bishop = (block,Board) => {
 const getValidMoves = (block,Board) => {
 
     switch(block.pieceName) {
-        case 'Bishops':
+        case 'pawn':
             //no need of break we are returning the value here
-            return bishop(block,Board);
+            return pawn(block,Board);
         default:
             return []
     }
