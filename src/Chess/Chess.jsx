@@ -66,7 +66,7 @@ class Chess extends Component {
     }
     
     move(piece,newBoard) {
-        console.log(piece)
+        ////console.log(piece)
         let moves = getValidMoves(piece,newBoard)
         this.setState({selected: piece, possibleMoves: moves.possibleMoves, attack: moves.attack})
     }
@@ -77,7 +77,7 @@ class Chess extends Component {
         selected.r = r
         selected.c = c
         selected.firstMove = false
-        console.log('rerender called')
+        ////console.log('rerender called')
         this.setState({selected, possibleMoves: [], attack: []})
     }
     eliminate(block) {
@@ -107,7 +107,7 @@ class Chess extends Component {
         else {
             let piece = block.piece
             let index = -1
-            console.log(piece.pieceName,black[piece.pieceName])
+            //console.log(piece.pieceName,black[piece.pieceName])
             black[piece.pieceName].forEach((pos,currIndex) => {
                 if(!pos)
                     return
@@ -127,7 +127,7 @@ class Chess extends Component {
         this.setState({white, black, selected: null, possibleMoves: [], attack: []})
     }
     render() {
-        console.log('rerendered')
+        //console.log('rerendered')
         let {Board,white,black,possibleMoves,attack} = this.state
         
         // we can not change object in our state as it will effect its value even without setState as reference of object inside object will be same e.g white.pawns = null it will change this.state.pawns as both .pawns refer to same memory
@@ -143,7 +143,7 @@ class Chess extends Component {
             newBoard.push(newRow)
         })
         for(let piece in white) {
-            console.log(piece,white[piece])
+            //console.log(piece,white[piece])
             white[piece].forEach((pos) => {
                 if(!pos)
                     return
