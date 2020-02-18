@@ -1,20 +1,20 @@
 {
   "files": {
-    "main.css": "/chess-deploy/static/css/main.4d41f9a2.chunk.css",
-    "main.js": "/chess-deploy/static/js/main.68ce6ea9.chunk.js",
-    "main.js.map": "/chess-deploy/static/js/main.68ce6ea9.chunk.js.map",
-    "runtime-main.js": "/chess-deploy/static/js/runtime-main.01cba33f.js",
-    "runtime-main.js.map": "/chess-deploy/static/js/runtime-main.01cba33f.js.map",
-    "static/js/2.b1fda4e3.chunk.js": "/chess-deploy/static/js/2.b1fda4e3.chunk.js",
-    "static/js/2.b1fda4e3.chunk.js.map": "/chess-deploy/static/js/2.b1fda4e3.chunk.js.map",
-    "index.html": "/chess-deploy/index.html",
-    "precache-manifest.cf1c39b7919a746b33a6a59a04f7b342.js": "/chess-deploy/precache-manifest.cf1c39b7919a746b33a6a59a04f7b342.js",
-    "service-worker.js": "/chess-deploy/service-worker.js",
-    "static/css/main.4d41f9a2.chunk.css.map": "/chess-deploy/static/css/main.4d41f9a2.chunk.css.map",
-    "static/js/2.b1fda4e3.chunk.js.LICENSE.txt": "/chess-deploy/static/js/2.b1fda4e3.chunk.js.LICENSE.txt"
+    "main.css": "/chess-game-build/static/css/main.4d41f9a2.chunk.css",
+    "main.js": "/chess-game-build/static/js/main.68ce6ea9.chunk.js",
+    "main.js.map": "/chess-game-build/static/js/main.68ce6ea9.chunk.js.map",
+    "runtime-main.js": "/chess-game-build/static/js/runtime-main.0fa7a7c5.js",
+    "runtime-main.js.map": "/chess-game-build/static/js/runtime-main.0fa7a7c5.js.map",
+    "static/js/2.b1fda4e3.chunk.js": "/chess-game-build/static/js/2.b1fda4e3.chunk.js",
+    "static/js/2.b1fda4e3.chunk.js.map": "/chess-game-build/static/js/2.b1fda4e3.chunk.js.map",
+    "index.html": "/chess-game-build/index.html",
+    "precache-manifest.1926b42531ad015e06d791c02b4febf9.js": "/chess-game-build/precache-manifest.1926b42531ad015e06d791c02b4febf9.js",
+    "service-worker.js": "/chess-game-build/service-worker.js",
+    "static/css/main.4d41f9a2.chunk.css.map": "/chess-game-build/static/css/main.4d41f9a2.chunk.css.map",
+    "static/js/2.b1fda4e3.chunk.js.LICENSE.txt": "/chess-game-build/static/js/2.b1fda4e3.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.01cba33f.js",
+    "static/js/runtime-main.0fa7a7c5.js",
     "static/js/2.b1fda4e3.chunk.js",
     "static/css/main.4d41f9a2.chunk.css",
     "static/js/main.68ce6ea9.chunk.js"
