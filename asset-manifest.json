@@ -1,20 +1,20 @@
 {
   "files": {
-    "main.css": "/rishabhkailey/chess-deploy.git/static/css/main.4d41f9a2.chunk.css",
-    "main.js": "/rishabhkailey/chess-deploy.git/static/js/main.68ce6ea9.chunk.js",
-    "main.js.map": "/rishabhkailey/chess-deploy.git/static/js/main.68ce6ea9.chunk.js.map",
-    "runtime-main.js": "/rishabhkailey/chess-deploy.git/static/js/runtime-main.1f0e5945.js",
-    "runtime-main.js.map": "/rishabhkailey/chess-deploy.git/static/js/runtime-main.1f0e5945.js.map",
-    "static/js/2.b1fda4e3.chunk.js": "/rishabhkailey/chess-deploy.git/static/js/2.b1fda4e3.chunk.js",
-    "static/js/2.b1fda4e3.chunk.js.map": "/rishabhkailey/chess-deploy.git/static/js/2.b1fda4e3.chunk.js.map",
-    "index.html": "/rishabhkailey/chess-deploy.git/index.html",
-    "precache-manifest.825684d9d114c8ac75834a17204b5da0.js": "/rishabhkailey/chess-deploy.git/precache-manifest.825684d9d114c8ac75834a17204b5da0.js",
-    "service-worker.js": "/rishabhkailey/chess-deploy.git/service-worker.js",
-    "static/css/main.4d41f9a2.chunk.css.map": "/rishabhkailey/chess-deploy.git/static/css/main.4d41f9a2.chunk.css.map",
-    "static/js/2.b1fda4e3.chunk.js.LICENSE.txt": "/rishabhkailey/chess-deploy.git/static/js/2.b1fda4e3.chunk.js.LICENSE.txt"
+    "main.css": "/chess-deploy.git/static/css/main.4d41f9a2.chunk.css",
+    "main.js": "/chess-deploy.git/static/js/main.68ce6ea9.chunk.js",
+    "main.js.map": "/chess-deploy.git/static/js/main.68ce6ea9.chunk.js.map",
+    "runtime-main.js": "/chess-deploy.git/static/js/runtime-main.70cf63c6.js",
+    "runtime-main.js.map": "/chess-deploy.git/static/js/runtime-main.70cf63c6.js.map",
+    "static/js/2.b1fda4e3.chunk.js": "/chess-deploy.git/static/js/2.b1fda4e3.chunk.js",
+    "static/js/2.b1fda4e3.chunk.js.map": "/chess-deploy.git/static/js/2.b1fda4e3.chunk.js.map",
+    "index.html": "/chess-deploy.git/index.html",
+    "precache-manifest.f15e63d80c905208b366244b0a9007ef.js": "/chess-deploy.git/precache-manifest.f15e63d80c905208b366244b0a9007ef.js",
+    "service-worker.js": "/chess-deploy.git/service-worker.js",
+    "static/css/main.4d41f9a2.chunk.css.map": "/chess-deploy.git/static/css/main.4d41f9a2.chunk.css.map",
+    "static/js/2.b1fda4e3.chunk.js.LICENSE.txt": "/chess-deploy.git/static/js/2.b1fda4e3.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.1f0e5945.js",
+    "static/js/runtime-main.70cf63c6.js",
     "static/js/2.b1fda4e3.chunk.js",
     "static/css/main.4d41f9a2.chunk.css",
     "static/js/main.68ce6ea9.chunk.js"
