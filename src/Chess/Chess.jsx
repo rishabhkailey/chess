@@ -14,10 +14,11 @@ class Chess extends Component {
             },
             Board : [],
             possibleMoves: [],
-            attack: []
+            attack: [],
+            activePlayer: false// flase for black and true for white
         }
     }
-    componentDidMount() {
+    initialiseGame() {
         let white = {}
         let black = {}
         let whitepawn = []
@@ -62,29 +63,44 @@ class Chess extends Component {
             Board.push(row)
         }
 
-        this.setState({Board,white,black})
+        this.setState({Board,white,black,possibleMoves: [],attack: []})
+    }
+    componentDidMount() {
+        this.initialiseGame()
     }
     
+    gameover(winner) {
+        if(winner) {
+            alert('white won')
+        }
+        else {
+            alert('black won')
+        }
+        this.initialiseGame()
+    }
+
     move(piece,newBoard) {
         ////console.log(piece)
+        // we will not show the moves of non active player 
+        if(piece.white !== this.state.activePlayer)
+            return
         let moves = getValidMoves(piece,newBoard)
         this.setState({selected: piece, possibleMoves: moves.possibleMoves, attack: moves.attack})
     }
 
     changePosition(r,c) {
-        let {selected} = this.state
+        let {selected,activePlayer} = this.state
         // here selected = piece (object reference) so we change selected {r,c} it will change the value of piece inside white , black (but will not rerender so we need to do this.setState but do not change the reference of selected)
         selected.r = r
         selected.c = c
         selected.firstMove = false
         ////console.log('rerender called')
-        this.setState({selected, possibleMoves: [], attack: []})
+        this.setState({selected, possibleMoves: [], attack: [],activePlayer: !activePlayer})
     }
     eliminate(block) {
-        //eliminate block and change position of select to this block
-        
-        let {white,black,selected} =  this.state
+        let {white,black,selected,activePlayer} =  this.state
 
+        //eliminate block and change position of select to this block        
         if(block.piece.white) {
             let piece = block.piece
             let index = -1
@@ -124,7 +140,11 @@ class Chess extends Component {
             delete black[piece.pieceName][index]
             black[piece.pieceName][index] = null
         }
-        this.setState({white, black, selected: null, possibleMoves: [], attack: []})
+        if(block.piece.pieceName === 'king') {
+            this.gameover(!block.piece.white)
+        } 
+        else
+            this.setState({white, black, selected: null, activePlayer: !activePlayer, possibleMoves: [], attack: []})
     }
     render() {
         //console.log('rerendered')
