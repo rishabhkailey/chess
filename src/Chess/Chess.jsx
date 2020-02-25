@@ -2,6 +2,9 @@ import React,{Component} from 'react'
 import './chess.css'
 import getValidMoves from './moves'
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faUndo , faRedo } from '@fortawesome/free-solid-svg-icons'
+
 class Chess extends Component {
     constructor(props) {
         super(props)
@@ -15,9 +18,61 @@ class Chess extends Component {
             Board : [],
             possibleMoves: [],
             attack: [],
-            activePlayer: false// flase for black and true for white
+            activePlayer: false,// flase for black and true for white
+            redoStack: [],
+            undoStack: []
         }
+        this.undo = this.undo.bind(this)
+        this.redo = this.redo.bind(this)
     }
+    
+    
+    redo() {
+        let {undoStack , redoStack , activePlayer} = this.state
+        if(redoStack.length === 0) {
+            return
+        }
+        let topIndex = redoStack.length - 1
+        let {piece , old_pos} = redoStack[topIndex]
+        
+        // saving old values for undo stack
+        let r1 = piece.r , c1 = piece.c , old_first_move1 = piece.old_first_move
+
+        // we are changing in the original reference (so changes will be reflected in the game) 
+        piece.r = old_pos.r;
+        piece.c = old_pos.c;
+        piece.firstMove = old_pos.old_first_move
+
+        redoStack.splice(topIndex,1)
+        undoStack.push({piece , old_pos: {r: r1 , c: c1}})
+
+        this.setState({undoStack , redoStack , activePlayer: !activePlayer , possibleMoves: [], attack: [] , selected: null})
+    }
+
+
+    undo() {
+        let {undoStack , redoStack , activePlayer} = this.state
+        if(undoStack.length === 0) {
+            return
+        }
+        let topIndex = undoStack.length - 1
+        let {piece , old_pos , old_first_move} = undoStack[topIndex]
+        
+        // saving the old values for redo stack
+        let r1 = piece.r , c1 = piece.c , old_first_move1 = piece.old_first_move
+
+        // we are changing in the original reference (so changes will be reflected in the game) 
+        piece.r = old_pos.r;
+        piece.c = old_pos.c;
+        piece.firstMove = old_first_move
+
+        undoStack.splice(topIndex,1)
+        redoStack.push({piece , old_pos: {r: r1 , c: c1} , old_first_move: old_first_move1})
+
+        this.setState({undoStack , redoStack , activePlayer: !activePlayer , possibleMoves: [], attack: [] , selected: null})
+    }
+
+
     initialiseGame() {
         let white = {}
         let black = {}
@@ -89,14 +144,20 @@ class Chess extends Component {
     }
 
     changePosition(r,c) {
-        let {selected,activePlayer} = this.state
+        let {selected,activePlayer,undoStack} = this.state
         // here selected = piece (object reference) so we change selected {r,c} it will change the value of piece inside white , black (but will not rerender so we need to do this.setState but do not change the reference of selected)
+        
+        // use piece to get info like curr position
+        let stackElement = {piece: selected , old_pos: {r: selected.r , c: selected.c} , old_first_move: selected.firstMove}
+        undoStack.push(stackElement)
+
         selected.r = r
         selected.c = c
         selected.firstMove = false
         ////console.log('rerender called')
-        this.setState({selected, possibleMoves: [], attack: [],activePlayer: !activePlayer})
+        this.setState({selected, possibleMoves: [], attack: [],activePlayer: !activePlayer,undoStack})
     }
+
     eliminate(block) {
         let {white,black,selected,activePlayer} =  this.state
 
@@ -196,13 +257,15 @@ class Chess extends Component {
             newBoard[r][c].attack = true
         })
 
+        let empty = <div className='piece'></div>
+
         let display = newBoard.map((row,index1) => {
             let displayRow = row.map((block,index2) => {
                 let color = 'black'
                 if(block.color) {
                     color = 'white'
                 }
-                let piece =  null
+                let piece =  empty
                 let onClick = null
                 if(block.piece && block.piece.player  && block.piece.pieceName) {
                     piece = <img src={'/images/'+block.piece.player+"_"+block.piece.pieceName+'.png'} className = 'piece'></img>
@@ -210,7 +273,9 @@ class Chess extends Component {
                 }
 
                 if(block.highlight) {
-                    return <div className='block highlight' onClick={()=>{this.changePosition(index1,index2)}} key={index1*8+index2} style={{backgroundColor: color}}></div>
+                    return <div className='block highlight' onClick={()=>{this.changePosition(index1,index2)}} key={index1*8+index2} style={{backgroundColor: color}}>
+                        {empty}
+                    </div>
                 }
                 else if(block.attack) {
                     return <div className='block attack' key={index1*8+index2} onClick={()=> {this.eliminate(block)}} style={{backgroundColor: color}}>{piece}</div>
@@ -220,9 +285,14 @@ class Chess extends Component {
             })
             return <div key={index1} className = 'row'>{displayRow}</div>
         })
-    return <div style={{margin: 'auto'}}>
+    return <div className = 'outside-container'>
         {display}
+        <div className='row'>
+            <button className = 'button' onClick={this.undo}><FontAwesomeIcon icon={faUndo} / ></button>
+            <button className = 'button' onClick={this.redo}><FontAwesomeIcon icon={faRedo} / ></button>
+        </div>
     </div>
     }
+
 }
 export default Chess
