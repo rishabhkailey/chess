@@ -80,26 +80,26 @@ class Chess extends Component {
         let blackpawn = []
 
         for(let i=0 ; i<8 ; i++) {
-            whitepawn.push({r: 1 , c: i, firstMove: true, move: 'down'})
-            blackpawn.push({r: 6, c: 7-i ,firstMove: true, move: 'up'})
+            whitepawn.push({r: 1 , c: i, firstMove: true, isAlive: true, move: 'down'})
+            blackpawn.push({r: 6, c: 7-i ,firstMove: true, isAlive: true, move: 'up'})
         }
         black.pawn = blackpawn
         white.pawn = whitepawn
         
-        black.rook = [{r: 7, c: 0, firstMove: true},{r: 7, c: 7, firstMove: true}]
-        white.rook = [{r: 0, c: 0, firstMove: true},{r: 0, c: 7, firstMove: true}]
+        black.rook = [{r: 7, c: 0, firstMove: true, isAlive: true},{r: 7, c: 7, firstMove: true, isAlive: true}]
+        white.rook = [{r: 0, c: 0, firstMove: true, isAlive: true},{r: 0, c: 7, firstMove: true, isAlive: true}]
 
-        black.knight = [{r: 7, c: 1, firstMove: true},{r: 7, c: 6, firstMove: true}]
-        white.knight = [{r: 0, c: 1, firstMove: true},{r: 0, c: 6, firstMove: true}]
+        black.knight = [{r: 7, c: 1, firstMove: true, isAlive: true},{r: 7, c: 6, firstMove: true, isAlive: true}]
+        white.knight = [{r: 0, c: 1, firstMove: true, isAlive: true},{r: 0, c: 6, firstMove: true, isAlive: true}]
 
-        black.bishop = [{r: 7, c: 2, firstMove: true},{r: 7, c: 5, firstMove: true}]
-        white.bishop = [{r: 0, c: 2, firstMove: true},{r: 0, c: 5, firstMove: true}]
+        black.bishop = [{r: 7, c: 2, firstMove: true, isAlive: true},{r: 7, c: 5, firstMove: true, isAlive: true}]
+        white.bishop = [{r: 0, c: 2, firstMove: true, isAlive: true},{r: 0, c: 5, firstMove: true, isAlive: true}]
 
-        black.queen = [{r: 7, c: 3, firstMove: true}]
-        white.queen = [{r: 0, c: 3, firstMove: true}]
+        black.queen = [{r: 7, c: 3, firstMove: true, isAlive: true}]
+        white.queen = [{r: 0, c: 3, firstMove: true, isAlive: true}]
 
-        black.king = [{r: 7, c: 4, firstMove: true}]
-        white.king = [{r: 0, c: 4, firstMove: true}]
+        black.king = [{r: 7, c: 4, firstMove: true, isAlive: true}]
+        white.king = [{r: 0, c: 4, firstMove: true, isAlive: true}]
 
         
 
@@ -161,51 +161,18 @@ class Chess extends Component {
     eliminate(block) {
         let {white,black,selected,activePlayer} =  this.state
 
-        //eliminate block and change position of select to this block        
-        if(block.piece.white) {
-            let piece = block.piece
-            let index = -1
-            white[piece.pieceName].forEach((pos,currIndex) => {
-                if(!pos)
-                    return
-                let {r,c} = pos
-                if(r === piece.r && c === piece.c) {
-                    index = currIndex
-                    return
-                }
-            })
-            // selected = reference of piece so it is changing the original object
-            selected.r = piece.r
-            selected.c = piece.c
-            // after delete arr will still have that index but it will be undefined 
-            delete white[piece.pieceName][index]
-            white[piece.pieceName][index] = null
-        }
-        else {
-            let piece = block.piece
-            let index = -1
-            //console.log(piece.pieceName,black[piece.pieceName])
-            black[piece.pieceName].forEach((pos,currIndex) => {
-                if(!pos)
-                    return
-                let {r,c} = pos
-                if(r === piece.r && c === piece.c) {
-                    index = currIndex
-                    return
-                }
-            })
-            // selected = reference of piece so it is changing the original object
-            selected.r = piece.r
-            selected.c = piece.c
-            // after delete arr will still have that index but it will be undefined 
-            delete black[piece.pieceName][index]
-            black[piece.pieceName][index] = null
-        }
+        // block , selected are refrences of original object, so changes will be reflected in the game
+        block.piece.isAlive = false
+        let {r,c} = block.piece
+        selected.r = r
+        selected.c = c
+
         if(block.piece.pieceName === 'king') {
             this.gameover(!block.piece.white)
         } 
         else
             this.setState({white, black, selected: null, activePlayer: !activePlayer, possibleMoves: [], attack: []})
+    
     }
     render() {
         //console.log('rerendered')
@@ -226,7 +193,7 @@ class Chess extends Component {
         for(let piece in white) {
             //console.log(piece,white[piece])
             white[piece].forEach((pos) => {
-                if(!pos)
+                if(!pos.isAlive)
                     return
                 let {r,c} = pos
                 pos.pieceName = piece
@@ -237,7 +204,7 @@ class Chess extends Component {
         }
         for(let piece in black) {
             black[piece].forEach((pos) => {
-                if(!pos) 
+                if(!pos.isAlive) 
                     return
                 let {r,c} = pos
                 pos.pieceName = piece
