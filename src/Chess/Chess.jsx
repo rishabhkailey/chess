@@ -1,9 +1,8 @@
 import React,{Component} from 'react'
-import './chess.css'
 import getValidMoves from './moves'
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUndo , faRedo } from '@fortawesome/free-solid-svg-icons'
+import './chess.css'
 
 class Chess extends Component {
     constructor(props) {
@@ -33,18 +32,29 @@ class Chess extends Component {
             return
         }
         let topIndex = redoStack.length - 1
-        let {piece , old_pos} = redoStack[topIndex]
+        let undo_stack_element = []
+
+        console.log(redoStack[topIndex])
+
+        redoStack[topIndex].forEach((move) => {
+            
+            let {piece , old_pos , old_isAlive , old_first_move} = move
         
-        // saving old values for undo stack
-        let r1 = piece.r , c1 = piece.c , old_first_move1 = piece.old_first_move
+            // saving old values for undo stack
+            let r1 = piece.r , c1 = piece.c , old_first_move1 = piece.first_move, old_isAlive1 = piece.isAlive
 
-        // we are changing in the original reference (so changes will be reflected in the game) 
-        piece.r = old_pos.r;
-        piece.c = old_pos.c;
-        piece.firstMove = old_pos.old_first_move
+            // we are changing in the original reference (so changes will be reflected in the game) 
+            piece.r = old_pos.r
+            piece.c = old_pos.c
+            piece.firstMove = old_first_move
+            piece.isAlive = old_isAlive
 
+            undo_stack_element.push({piece , old_pos: {r: r1 , c: c1}, old_first_move: old_first_move1, old_isAlive: old_isAlive1})
+
+        })
+        
         redoStack.splice(topIndex,1)
-        undoStack.push({piece , old_pos: {r: r1 , c: c1}})
+        undoStack.push(undo_stack_element)
 
         this.setState({undoStack , redoStack , activePlayer: !activePlayer , possibleMoves: [], attack: [] , selected: null})
     }
@@ -56,18 +66,28 @@ class Chess extends Component {
             return
         }
         let topIndex = undoStack.length - 1
-        let {piece , old_pos , old_first_move} = undoStack[topIndex]
+
+        let redo_stack_element = []
+
+        undoStack[topIndex].forEach((move) => {
+            // these will be the new values for the piece
+            let {piece , old_pos , old_first_move, old_isAlive} = move
         
-        // saving the old values for redo stack
-        let r1 = piece.r , c1 = piece.c , old_first_move1 = piece.old_first_move
+            // saving the old values for redo stack
+            let r1 = piece.r , c1 = piece.c , old_first_move1 = piece.first_move, old_isAlive1 = piece.isAlive
+    
+            // we are changing in the original reference (so changes will be reflected in the game) 
+            piece.r = old_pos.r
+            piece.c = old_pos.c
+            piece.firstMove = old_first_move
+            piece.isAlive = old_isAlive
+    
+            redo_stack_element.push({piece , old_pos: {r: r1 , c: c1} , old_first_move: old_first_move1, old_isAlive: old_isAlive1})
 
-        // we are changing in the original reference (so changes will be reflected in the game) 
-        piece.r = old_pos.r;
-        piece.c = old_pos.c;
-        piece.firstMove = old_first_move
-
+        })
+        
         undoStack.splice(topIndex,1)
-        redoStack.push({piece , old_pos: {r: r1 , c: c1} , old_first_move: old_first_move1})
+        redoStack.push(redo_stack_element)
 
         this.setState({undoStack , redoStack , activePlayer: !activePlayer , possibleMoves: [], attack: [] , selected: null})
     }
@@ -147,19 +167,26 @@ class Chess extends Component {
         let {selected,activePlayer,undoStack} = this.state
         // here selected = piece (object reference) so we change selected {r,c} it will change the value of piece inside white , black (but will not rerender so we need to do this.setState but do not change the reference of selected)
         
-        // use piece to get info like curr position
-        let stackElement = {piece: selected , old_pos: {r: selected.r , c: selected.c} , old_first_move: selected.firstMove}
-        undoStack.push(stackElement)
+        // use piece to get info like curr position see stackElement in eliminate fxn
+        let undo_stack_element = [{piece: selected , old_pos: {r: selected.r , c: selected.c} , old_first_move: selected.firstMove, old_isAlive: selected.isAlive}]
+        
+        // array because in case of elimnation position of two pieces are changed
+        undoStack.push(undo_stack_element)
 
         selected.r = r
         selected.c = c
         selected.firstMove = false
-        ////console.log('rerender called')
+        //console.log('rerender called')
         this.setState({selected, possibleMoves: [], attack: [],activePlayer: !activePlayer,undoStack})
     }
 
     eliminate(block) {
-        let {white,black,selected,activePlayer} =  this.state
+        let {white,black,selected,activePlayer,undoStack} =  this.state
+
+        let undo_stack_element = []
+        undo_stack_element.push({piece: selected , old_pos: {r: selected.r , c: selected.c} , old_first_move: selected.firstMove,old_isAlive: selected.isAlive })
+        undo_stack_element.push({piece: block.piece , old_pos: {r: block.piece.r , c: block.piece.c} , old_first_move: block.piece.firstMove, old_isAlive: block.piece.isAlive})
+        undoStack.push(undo_stack_element)
 
         // block , selected are refrences of original object, so changes will be reflected in the game
         block.piece.isAlive = false
@@ -171,7 +198,7 @@ class Chess extends Component {
             this.gameover(!block.piece.white)
         } 
         else
-            this.setState({white, black, selected: null, activePlayer: !activePlayer, possibleMoves: [], attack: []})
+            this.setState({white, black, selected: null, activePlayer: !activePlayer, undoStack, possibleMoves: [], attack: []})
     
     }
     render() {
